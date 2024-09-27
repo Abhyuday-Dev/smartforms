@@ -20,7 +20,13 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",                // <-- Added this line
+    "paths": {
+      "@/components/*": ["components/*"],   // <-- Example alias for components
+      "@/lib/*": ["lib/*"],                 // <-- Example alias for library
+      "@/*": ["./*"]                        // <-- Generic alias for root directory
+    }
   },
   "include": [
     "next-env.d.ts",
