@@ -33,7 +33,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "app/edit-form/[formId]/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
