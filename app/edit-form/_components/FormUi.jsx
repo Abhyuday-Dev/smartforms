@@ -10,8 +10,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import FieldEdit from "./FieldEdit";
 
-const FormUi = ({ jsonForm }) => {
+const FormUi = ({ jsonForm,onFieldUpdate,deleteField }) => {
+ 
   return (
     <div className="border p-5 md:w-[600px] rounded-lg">
       <h2 className="font-bold text-center text-2xl">{jsonForm?.formTitle}</h2>
@@ -19,30 +21,35 @@ const FormUi = ({ jsonForm }) => {
         {jsonForm?.formSubheading}
       </h2>
       {jsonForm?.formFields?.map((field, index) => (
-        <div key={index}>
+        <div key={index} className="flex justify-center">
           {field.type == "select" ? (
-            <Select>
+            <div className="w-full">
               <label className="text-sm text-gray-500">{field.label}</label>
-              <SelectTrigger className="w-full">
-                <SelectValue
-                  className="text-gray-500"
-                  placeholder={field.placeholder}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {field.options.map((item, index) => (
-                  <SelectItem key={index} value={item}>
-                    {item}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    className="text-gray-500"
+                    placeholder={field.placeholder}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {field.options.map((item, index) => (
+                    <SelectItem key={index} value={item}>
+                      {item}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           ) : field.type == "radio" ? (
-            <div>
+            <div className="w-full">
               <label className="text-sm text-gray-500">{field.label}</label>
               <RadioGroup>
                 {field.options.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-2">
+                  <div
+                    key={index}
+                    className="flex items-center space-x-2 w-full"
+                  >
                     <RadioGroupItem value={item} id={item} />
                     <Label htmlFor={item}>{item}</Label>
                   </div>
@@ -50,24 +57,24 @@ const FormUi = ({ jsonForm }) => {
               </RadioGroup>
             </div>
           ) : field.type == "checkbox" ? (
-            <div>
+            <div className="w-full">
               <label className="text-sm text-gray-500">{field.label}</label>
               {field?.options ? (
                 field.options.map((item, index) => (
-                  <div className="flex items-center gap-2">
+                  <div key={index} className="flex items-center gap-2">
                     <Checkbox />
                     <h2>{item}</h2>
                   </div>
                 ))
               ) : (
-                <div flex gap-2>
+                <div className="flex gap-2 w-full">
                   <Checkbox />
                   <h2>{field.label}</h2>
                 </div>
               )}
             </div>
           ) : (
-            <div className="my-3">
+            <div className="my-3 w-full">
               <label className="text-sm text-gray-500">{field.label}</label>
               <Input
                 type={field?.type}
@@ -76,6 +83,15 @@ const FormUi = ({ jsonForm }) => {
               />
             </div>
           )}
+          <div>
+            <FieldEdit
+              defaultValue={field}
+              onUpdate={(value) => {
+                onFieldUpdate(value,index);
+              }}
+              deleteField={()=>deleteField(index)}
+            />
+          </div>
         </div>
       ))}
     </div>
