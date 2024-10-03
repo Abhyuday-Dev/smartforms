@@ -11,11 +11,12 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import FieldEdit from "./FieldEdit";
+import { Button } from "@/components/ui/button";
 
-const FormUi = ({ jsonForm,onFieldUpdate,deleteField }) => {
+const FormUi = ({ jsonForm,onFieldUpdate,deleteField,selectedTheme}) => {
  
   return (
-    <div className="border p-5 md:w-[600px] rounded-lg">
+    <div className="border p-5 md:w-[600px] rounded-lg" data-theme={selectedTheme}>
       <h2 className="font-bold text-center text-2xl">{jsonForm?.formTitle}</h2>
       <h2 className="text-sm text-gray-500 text-center">
         {jsonForm?.formSubheading}
@@ -92,8 +93,10 @@ const FormUi = ({ jsonForm,onFieldUpdate,deleteField }) => {
               deleteField={()=>deleteField(index)}
             />
           </div>
+          
         </div>
       ))}
+      <button className="btn btn-primary">Submit</button>
     </div>
   );
 };

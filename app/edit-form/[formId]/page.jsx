@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import FormUi from "../_components/FormUi";
+import Controller from "../_components/Controller";
 
 const EditForm = ({ params }) => {
   const { user } = useUser();
@@ -15,6 +16,9 @@ const EditForm = ({ params }) => {
   const router = useRouter();
   const [updateTrigger, setUpdateTrigger] = useState();
   const [record, setRecord] = useState([]);
+
+  const [selectedTheme, setSelectedTheme] = useState("light");
+  const [selectedBackground, setSelectedBackground] = useState();
 
   useEffect(() => {
     user && getFormData();
@@ -32,6 +36,8 @@ const EditForm = ({ params }) => {
       );
     setRecord(result[0]);
     setJsonForm(JSON.parse(result[0].jsonform));
+    setSelectedBackground(result[0].background);
+    setSelectedTheme(result[0].theme);
   };
 
   useEffect(() => {
@@ -46,7 +52,6 @@ const EditForm = ({ params }) => {
     setUpdateTrigger(Date.now());
   };
 
-
   const updateDbForm = async () => {
     try {
       const result = await db
@@ -58,17 +63,31 @@ const EditForm = ({ params }) => {
             eq(user?.primaryEmailAddress?.emailAddress, forms.createdBy)
           )
         );
-        console.log(result);
+      console.log(result);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const deleteField=(indexToRemove)=>{
-    const result=jsonForm.formFields.filter((item,index)=>index!=indexToRemove);
-    jsonForm.formFields=result;
+  const deleteField = (indexToRemove) => {
+    const result = jsonForm.formFields.filter(
+      (item, index) => index != indexToRemove
+    );
+    jsonForm.formFields = result;
     setUpdateTrigger(Date.now());
-  }
+  };
+
+  const updateFields = async (value, columnName) => {
+    const result = await db
+      .update(forms)
+      .set({ [columnName]: value })
+      .where(
+        and(
+          eq(forms.id, record.id),
+          eq(user?.primaryEmailAddress?.emailAddress, forms.createdBy)
+        )
+      );
+  };
   return (
     <div className="p-10">
       <h2
@@ -79,9 +98,28 @@ const EditForm = ({ params }) => {
         Back
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="p-5 border rounded-lg shadow-md">Controller</div>
-        <div className="md:col-span-2 border rounded-lg h-full flex items-center justify-center p-5">
-          <FormUi jsonForm={jsonForm} onFieldUpdate={onFieldUpdate} deleteField={(index)=>deleteField(index)} />
+        <div className="p-5 border rounded-lg shadow-md">
+          <Controller
+            selectedTheme={(value) => {
+              updateFields(value, "theme");
+              setSelectedTheme(value);
+            }}
+            selectedBackground={(value) => {
+              updateFields(value, "background");
+              setSelectedBackground(value);
+            }}
+          />
+        </div>
+        <div
+          className="md:col-span-2 border rounded-lg h-full flex items-center justify-center p-5"
+          style={{ backgroundImage: selectedBackground }}
+        >
+          <FormUi
+            jsonForm={jsonForm}
+            selectedTheme={selectedTheme}
+            onFieldUpdate={onFieldUpdate}
+            deleteField={(index) => deleteField(index)}
+          />
         </div>
       </div>
     </div>
