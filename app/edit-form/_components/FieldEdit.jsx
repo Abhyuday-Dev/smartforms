@@ -27,7 +27,7 @@ const FieldEdit = ({ defaultValue, onUpdate,deleteField }) => {
     <div className="flex gap-2">
       <Popover>
         <PopoverTrigger>
-          <Pen className="w-5 h-5 text-gray-500" />
+          <Pen className="w-4 h-4 text-gray-500" />
         </PopoverTrigger>
         <PopoverContent>
           <h2>Edit Field</h2>
@@ -66,7 +66,7 @@ const FieldEdit = ({ defaultValue, onUpdate,deleteField }) => {
       <AlertDialog>
         <AlertDialogTrigger>
           {" "}
-          <Trash2 className="w-5 h-5 text-red-500" />
+          <Trash2 className="w-4 h-4 text-red-500" />
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>

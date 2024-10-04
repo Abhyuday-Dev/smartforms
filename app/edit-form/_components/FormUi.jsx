@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import FieldEdit from "./FieldEdit";
 import { Button } from "@/components/ui/button";
 
-const FormUi = ({ jsonForm,onFieldUpdate,deleteField,selectedTheme}) => {
+const FormUi = ({ jsonForm,onFieldUpdate,deleteField,selectedTheme,editable=true}) => {
  
   return (
     <div className="border p-5 md:w-[600px] rounded-lg" data-theme={selectedTheme}>
@@ -84,7 +84,7 @@ const FormUi = ({ jsonForm,onFieldUpdate,deleteField,selectedTheme}) => {
               />
             </div>
           )}
-          <div>
+          {editable&&<div>
             <FieldEdit
               defaultValue={field}
               onUpdate={(value) => {
@@ -92,7 +92,7 @@ const FormUi = ({ jsonForm,onFieldUpdate,deleteField,selectedTheme}) => {
               }}
               deleteField={()=>deleteField(index)}
             />
-          </div>
+          </div>}
           
         </div>
       ))}

@@ -4,11 +4,13 @@ import { db } from "@/config";
 import { forms } from "@/config/schema";
 import { useUser } from "@clerk/nextjs";
 import { eq, and } from "drizzle-orm";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Share2, SquareArrowOutUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import FormUi from "../_components/FormUi";
 import Controller from "../_components/Controller";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const EditForm = ({ params }) => {
   const { user } = useUser();
@@ -90,6 +92,7 @@ const EditForm = ({ params }) => {
   };
   return (
     <div className="p-10">
+    <div className="flex justify-between items-center">
       <h2
         className="flex gap-2 items-center my-5 cursor-pointer hover:font-bold"
         onClick={() => router.back()}
@@ -97,6 +100,14 @@ const EditForm = ({ params }) => {
         <ArrowLeft />
         Back
       </h2>
+      <div className="flex gap-2">
+        <Link href={"/smartForm/"+record?.id} target="_blank">
+        <Button className="flex gap-2"><SquareArrowOutUpRight className="w-4 h-4" /> Live Preview</Button>
+        </Link>
+       
+        <Button className="flex gap-2 bg-green-600 hover:bg-green-500"><Share2  className="h-4 w-4"/>Share</Button>
+      </div>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="p-5 border rounded-lg shadow-md">
           <Controller
