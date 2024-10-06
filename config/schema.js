@@ -1,4 +1,4 @@
-import { pgTable,serial,text, varchar } from "drizzle-orm/pg-core";
+import { integer, pgTable,serial,text, varchar } from "drizzle-orm/pg-core";
 
 export const forms=pgTable('forms',{
     id:serial('id').primaryKey(),
@@ -9,3 +9,11 @@ export const forms=pgTable('forms',{
     createdBy:varchar('createdBy').notNull(),
     createdAt:varchar('createdAt').notNull(),
 })
+
+export const userResponse=pgTable('userResponse',{
+    id:serial('id').primaryKey(),
+    jsonResponse:text('jsonResponse').notNull(),
+    createdBy:varchar('createdBy').default("anonymous"),
+    createdAt:varchar('createdAt').notNull(),
+    formRef:integer('formRef').references(()=>forms.id, { onDelete: 'cascade' })
+});

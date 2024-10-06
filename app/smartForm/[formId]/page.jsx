@@ -27,6 +27,7 @@ const LivePreview = ({ params }) => {
     deleteField={()=>console.log}
     selectedTheme={record?.theme} 
     editable={false}
+    formId={record.id}
     />}
   </div>;
 };
