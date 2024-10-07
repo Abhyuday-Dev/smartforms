@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { LibraryBig, Database, ChartNoAxesCombined } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -32,7 +33,7 @@ const SideNav = () => {
     <div className="h-screen shadow-md border">
       <div className="p-5">
         {menuList.map((menu) => (
-          <h2
+          <Link href={menu.path}
             key={menu.id}
             className={`flex items-center gap-3 p-4 mb-3 font-medium rounded-lg cursor-pointer ${
               path === menu.path ? 'bg-primary text-white' : 'text-gray-600 hover:bg-primary hover:text-white'
@@ -40,7 +41,7 @@ const SideNav = () => {
           >
             <menu.icon />
             {menu.name}
-          </h2>
+          </Link>
         ))}
       </div>
 

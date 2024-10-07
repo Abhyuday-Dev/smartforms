@@ -11,6 +11,7 @@ const LivePreview = ({ params }) => {
   useEffect(() => {
     params && getFormData();
   }, [params]);
+  
   const getFormData = async () => {
     const result = await db
       .select()

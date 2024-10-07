@@ -17,30 +17,40 @@ import { useUser } from "@clerk/nextjs";
 import { db } from "@/config";
 import { and, eq } from "drizzle-orm";
 import { forms } from "@/config/schema";
-import { toast, useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { RWebShare } from "react-web-share";
 
 const FormDisplay = ({ form, formRecord,refreshData}) => {
   const { toast } = useToast();
   const { user } = useUser();
 
   const onDeleteForm = async () => {
-    const response = await db
-      .delete(forms)
-      .where(
-        and(
-          eq(formRecord.id, forms.id),
-          eq(forms.createdBy, user.primaryEmailAddress.emailAddress)
-        )
-      );
-
-    if (response) {
+    try {
+      const response = await db
+        .delete(forms)
+        .where(
+          and(
+            eq(formRecord.id, forms.id),
+            eq(forms.createdBy, user.primaryEmailAddress.emailAddress)
+          )
+        );
+  
+      if (response) {
+        toast({
+          title: "Success",
+          description: "Form deleted successfully",
+        });
+        refreshData();
+      }
+    } catch (error) {
+      console.error("Error deleting form:", error);
       toast({
-        title: "Success",
-        description: "Form deleted successfully",
+        title: "Error",
+        description: "There was an error deleting the form. Please try again.",
       });
-      refreshData();
     }
   };
+  
   return (
     <div className="border shadow-sm rounded-lg p-4">
       <div className="flex justify-between">
@@ -74,9 +84,19 @@ const FormDisplay = ({ form, formRecord,refreshData}) => {
       <h2 className=" text-sm text-gray-500">{form?.formSubheading}</h2>
       <hr className="my-4" />
       <div className="flex justify-between">
+      <RWebShare
+        data={{
+          text: form.formSubheading,
+          url:process.env.NEXT_PUBLIC_BASE_URL+"/smartForm/"+formRecord.id,
+          title: form?.formTitle,
+        }}
+        onClick={() => console.log("shared successfully!")}
+      >
         <Button variant="outline" size="sm" className="flex gap-2">
           <Share2 className="h-4 w-4" /> Share
         </Button>
+      </RWebShare>
+        
         <Link href={"/edit-form/" + formRecord.id}>
           <Button size="sm" className="flex gap-2">
             <EditIcon className="h-4 w-4" /> Edit
