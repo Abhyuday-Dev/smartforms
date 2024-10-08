@@ -33,8 +33,18 @@ const CreateForm = () => {
       setLoading(true);
 
       const result = await chatSession.sendMessage(
-        `Description:${userInput},on the basis of description please give form in json format with form title ,form subheading with form having form fields,form name, placeholder name and form labels ,field type,field required in json format without submit button`
+        `Description: ${userInput}. Based on this description, please generate a form in JSON format with the following structure: 
+        - Form title as "formTitle"
+        - Form subheading as "formSubheading"
+        - The form should have an array of fields as "formFields", where each field has:
+          - "label" (label for the field)
+          - "placeholder" (placeholder text)
+          - "fieldType" (type of field, e.g., text, radio, checkbox, select)
+          - "required" (whether the field is mandatory)
+          - For "select" field types, provide an array of options in the following format: [{ value: 'option_value', label: 'Option Label' }]
+        Please exclude the submit button from the form.`
       );
+      
 
       if (result.response.text()) {
         console.log(result.response.text());
