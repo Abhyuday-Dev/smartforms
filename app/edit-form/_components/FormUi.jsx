@@ -107,7 +107,7 @@ const FormUi = ({
               <Select
                 className="my-2"
                 required={field?.required}
-                onValueChange={(v) => handleSelectChange(field.fieldName, v)}
+                onValueChange={(v) => handleSelectChange(field.label, v)}
               >
                 <SelectTrigger className="w-full my-4">
                   <SelectValue
@@ -134,11 +134,11 @@ const FormUi = ({
                     className="flex items-center space-x-2 w-full"
                   >
                     <RadioGroupItem
-                      value={item}
-                      id={item}
-                      onClick={() => handleSelectChange(field.fieldName, item)}
+                      value={item.label}
+                      id={item.label}
+                      onClick={() => handleSelectChange(field.label, item.label)}
                     />
-                    <Label htmlFor={item}>{item}</Label>
+                    <Label htmlFor={item.label}>{item.label}</Label>
                   </div>
                 ))}
               </RadioGroup>
@@ -151,10 +151,10 @@ const FormUi = ({
                   <div key={index} className="flex items-center gap-2">
                     <Checkbox
                       onCheckedChange={(v) =>
-                        handleCheckboxChange(field.fieldName, item, v)
+                        handleCheckboxChange(field.label, item.label, v)
                       }
                     />
-                    <h2>{item}</h2>
+                    <h2>{item.label}</h2>
                   </div>
                 ))
               ) : (
@@ -170,7 +170,7 @@ const FormUi = ({
               <Input
                 type={field?.fieldType}
                 placeholder={field.placeholder}
-                name={field.fieldName}
+                name={field.label}
                 required={field?.required}
                 onChange={(e) => handleInputChange(e)}
               />
