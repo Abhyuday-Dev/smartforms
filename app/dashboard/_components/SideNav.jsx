@@ -20,7 +20,7 @@ const SideNav = () => {
       path: "/dashboard/responses",
     },
     {
-      id: 3, // Changed id to 3 to make it unique
+      id: 3,
       name: "Analytics",
       icon: ChartNoAxesCombined,
       path: "/dashboard/analytics",

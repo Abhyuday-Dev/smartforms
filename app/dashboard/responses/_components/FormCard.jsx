@@ -8,7 +8,7 @@ import * as XLSX from "xlsx";
 
 const FormCard = ({ form, formRecord }) => {
   const [loading, setLoading] = useState(false);
-  const [responseCount, setResponseCount] = useState(0); // State to hold the total number of responses
+  const [responseCount, setResponseCount] = useState(0); 
 
   const ExportData = async () => {
     let jsonData = [];
@@ -34,7 +34,7 @@ const FormCard = ({ form, formRecord }) => {
       toast({
         title: "Error",
         description: "There was an error fetching the form data. Please try again.",
-        variant: "destructive", // variant should be a string, not a variable
+        variant: "destructive", 
       });
     } finally {
       setLoading(false);

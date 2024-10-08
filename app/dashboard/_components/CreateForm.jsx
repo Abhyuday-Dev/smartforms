@@ -33,7 +33,7 @@ const CreateForm = () => {
       setLoading(true);
 
       const result = await chatSession.sendMessage(
-        `Description:${userInput},on the basis of description please give form in json format with form title ,form subheading with form having form fields,form name, placeholder name and form labels ,field type,field required in json format`
+        `Description:${userInput},on the basis of description please give form in json format with form title ,form subheading with form having form fields,form name, placeholder name and form labels ,field type,field required in json format without submit button`
       );
 
       if (result.response.text()) {

@@ -12,14 +12,15 @@ import Controller from "../_components/Controller";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { RWebShare } from "react-web-share";
+import Loader from "@/components/ui/Loader"; // Assuming you have a loader component
 
 const EditForm = ({ params }) => {
   const { user } = useUser();
   const [jsonForm, setJsonForm] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const router = useRouter();
   const [updateTrigger, setUpdateTrigger] = useState();
   const [record, setRecord] = useState([]);
-
   const [selectedTheme, setSelectedTheme] = useState("light");
   const [selectedBackground, setSelectedBackground] = useState();
 
@@ -28,19 +29,26 @@ const EditForm = ({ params }) => {
   }, [user]);
 
   const getFormData = async () => {
-    const result = await db
-      .select()
-      .from(forms)
-      .where(
-        and(
-          eq(forms.id, params?.formId),
-          eq(forms.createdBy, user?.primaryEmailAddress?.emailAddress)
-        )
-      );
-    setRecord(result[0]);
-    setJsonForm(JSON.parse(result[0].jsonform));
-    setSelectedBackground(result[0].background);
-    setSelectedTheme(result[0].theme);
+    try {
+      setLoading(true); // Set loading to true before fetching data
+      const result = await db
+        .select()
+        .from(forms)
+        .where(
+          and(
+            eq(forms.id, params?.formId),
+            eq(forms.createdBy, user?.primaryEmailAddress?.emailAddress)
+          )
+        );
+      setRecord(result[0]);
+      setJsonForm(JSON.parse(result[0].jsonform));
+      setSelectedBackground(result[0].background);
+      setSelectedTheme(result[0].theme);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false); // Set loading to false after data is fetched
+    }
   };
 
   useEffect(() => {
@@ -49,6 +57,7 @@ const EditForm = ({ params }) => {
       updateDbForm();
     }
   }, [updateTrigger]);
+
   const onFieldUpdate = (value, index) => {
     jsonForm.formFields[index].label = value.label;
     jsonForm.formFields[index].placeholder = value.placeholder;
@@ -91,60 +100,70 @@ const EditForm = ({ params }) => {
         )
       );
   };
+
   return (
     <div className="p-10">
-    <div className="flex justify-between items-center">
-      <h2
-        className="flex gap-2 items-center my-5 cursor-pointer hover:font-bold"
-        onClick={() => router.back()}
-      >
-        <ArrowLeft />
-        Back
-      </h2>
-      <div className="flex gap-2">
-        <Link href={"/smartForm/"+record?.id} target="_blank">
-        <Button className="flex gap-2"><SquareArrowOutUpRight className="w-4 h-4" /> Live Preview</Button>
-        </Link>
-       
-        <RWebShare
-        data={{
-          text: jsonForm.formSubheading,
-          url:process.env.NEXT_PUBLIC_BASE_URL+"smartForm/"+record.id,
-          title: jsonForm?.formTitle,
-        }}
-        onClick={() => console.log("shared successfully!")}
-      >
-        <Button  className="flex gap-2 bg-green-600 hover:bg-green-700 cursor-pointer">
-          <Share2 className="h-4 w-4" /> Share
-        </Button>
-      </RWebShare>
-      </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="p-5 border rounded-lg shadow-md">
-          <Controller
-            selectedTheme={(value) => {
-              updateFields(value, "theme");
-              setSelectedTheme(value);
-            }}
-            selectedBackground={(value) => {
-              updateFields(value, "background");
-              setSelectedBackground(value);
-            }}
-          />
-        </div>
-        <div
-          className="md:col-span-2 border rounded-lg h-full flex items-center justify-center p-5"
-          style={{ backgroundImage: selectedBackground }}
-        >
-          <FormUi
-            jsonForm={jsonForm}
-            selectedTheme={selectedTheme}
-            onFieldUpdate={onFieldUpdate}
-            deleteField={(index) => deleteField(index)}
-          />
-        </div>
-      </div>
+      {loading ? (
+        <Loader /> // Display the Loader component while loading
+      ) : (
+        <>
+          <div className="flex justify-between items-center">
+            <h2
+              className="flex gap-2 items-center my-5 cursor-pointer hover:font-bold"
+              onClick={() => router.back()}
+            >
+              <ArrowLeft />
+              Back
+            </h2>
+            <div className="flex gap-2">
+              <Link href={"/smartForm/" + record?.id} target="_blank">
+                <Button className="flex gap-2">
+                  <SquareArrowOutUpRight className="w-4 h-4" /> Live Preview
+                </Button>
+              </Link>
+
+              <RWebShare
+                data={{
+                  text: jsonForm.formSubheading,
+                  url:
+                    process.env.NEXT_PUBLIC_BASE_URL + "smartForm/" + record.id,
+                  title: jsonForm?.formTitle,
+                }}
+                onClick={() => console.log("shared successfully!")}
+              >
+                <Button className="flex gap-2 bg-green-600 hover:bg-green-700 cursor-pointer">
+                  <Share2 className="h-4 w-4" /> Share
+                </Button>
+              </RWebShare>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="p-5 border rounded-lg shadow-md">
+              <Controller
+                selectedTheme={(value) => {
+                  updateFields(value, "theme");
+                  setSelectedTheme(value);
+                }}
+                selectedBackground={(value) => {
+                  updateFields(value, "background");
+                  setSelectedBackground(value);
+                }}
+              />
+            </div>
+            <div
+              className="md:col-span-2 border rounded-lg h-full flex items-center justify-center p-5"
+              style={{ backgroundImage: selectedBackground }}
+            >
+              <FormUi
+                jsonForm={jsonForm}
+                selectedTheme={selectedTheme}
+                onFieldUpdate={onFieldUpdate}
+                deleteField={(index) => deleteField(index)}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
